@@ -1,10 +1,7 @@
 .env
 __pycache__/
 *.pyc
-.DS_Store
-rag_storage/
-uploads/
-
+.DS_Store 
 
 
 
