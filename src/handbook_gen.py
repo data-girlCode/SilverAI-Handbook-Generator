@@ -61,7 +61,7 @@ def _build_user_prompt(topic: str, context_chunks: Optional[list[str]] = None) -
 def generate_handbook(
     topic: str,
     context_chunks: Optional[list[str]] = None,
-    model: str = "grok-3",
+    model: str = "grok-4-1",
     stream: bool = True,
 ) -> str:
     """

@@ -59,7 +59,7 @@ def get_chat_response(
     user_query: str,
     history: Optional[list[dict]] = None,
     top_k: int = 5,
-    model: str = "grok-3",
+    model: str = "grok-4-1",
     stream: bool = True,
 ) -> Generator[str, None, None] | str:
     """
