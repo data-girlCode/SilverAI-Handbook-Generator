@@ -10,32 +10,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+import concurrent.futures
 
 def _run(coro):
-    """Python 3.14-safe async runner.
-
-    - Inside a running loop (e.g. Streamlit): applies nest_asyncio on-demand and reuses the loop.
-    - Outside a loop (e.g. CLI / tests): creates a fresh loop explicitly.
-
-    nest_asyncio is intentionally NOT applied at module level to avoid corrupting
-    Streamlit/anyio's event loop during static file serving.
-    """
-    try:
-        loop = asyncio.get_running_loop()
-        # We are inside Streamlit's loop — patch it just-in-time so run_until_complete works
-        import nest_asyncio
-        nest_asyncio.apply(loop)
-        return loop.run_until_complete(coro)
-    except RuntimeError:
-        # No running loop — create a fresh one (CLI, tests, etc.)
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        try:
-            return loop.run_until_complete(coro)
-        finally:
-            loop.close()
-            asyncio.set_event_loop(None)
-
+    """Run async code in a fresh thread with its own event loop — avoids Streamlit conflicts."""
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+        future = pool.submit(asyncio.run, coro)
+        return future.result()
 
 WORKING_DIR = "./rag_storage"
 XAI_BASE_URL = "https://api.x.ai/v1"
