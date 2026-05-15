@@ -1,0 +1,38 @@
+{
+  "doc-5118d0108c474e8c1fe4d6fd0b426928": {
+    "status": "failed",
+    "error_msg": "Event loop is closed",
+    "chunks_count": 2,
+    "chunks_list": [
+      "chunk-5118d0108c474e8c1fe4d6fd0b426928",
+      "chunk-9033e0e305f247c0c3c80d0c7848c8b3"
+    ],
+    "content_summary": "Dr. Victor Odumuyiwa Associate Professor of Computer Science (Artificial Intelligence), Director, NITDA IT Hub (NITHUB), University of Lagos National AI and Digital Strategy in Nigeria and Teacher Professional Development \"Technology is just a tool. ...",
+    "content_length": 6384,
+    "created_at": "2026-05-15T13:30:03.287134+00:00",
+    "updated_at": "2026-05-15T13:30:27.681124+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20260515_143003_07605253",
+    "metadata": {
+      "processing_start_time": 1778851827,
+      "processing_end_time": 1778851827
+    }
+  },
+  "dup-787c2ba479276dfc4454d44623c6994e": {
+    "status": "failed",
+    "content_summary": "[DUPLICATE] Original document: doc-5118d0108c474e8c1fe4d6fd0b426928",
+    "content_length": 6384,
+    "chunks_count": 0,
+    "chunks_list": [],
+    "created_at": "2026-05-15T13:30:27.539177+00:00",
+    "updated_at": "2026-05-15T13:30:27.539177+00:00",
+    "file_path": "unknown_source",
+    "track_id": "insert_20260515_143027_184029cb",
+    "error_msg": "Content already exists. Original doc_id: doc-5118d0108c474e8c1fe4d6fd0b426928, Status: DocStatus.FAILED",
+    "metadata": {
+      "is_duplicate": true,
+      "original_doc_id": "doc-5118d0108c474e8c1fe4d6fd0b426928",
+      "original_track_id": "insert_20260515_143003_07605253"
+    }
+  }
+}
