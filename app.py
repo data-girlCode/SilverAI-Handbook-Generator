@@ -11,7 +11,7 @@ load_dotenv()
 
 # Grok client
 grok = OpenAI(
-    api_key=os.getenv("GROK_API_KEY"),
+    api_key=os.getenv("GROK_API_KEY") or st.secrets.get("GROK_API_KEY", ""),
     base_url="https://api.x.ai/v1"
 )
 
