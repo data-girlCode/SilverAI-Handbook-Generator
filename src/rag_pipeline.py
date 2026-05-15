@@ -6,11 +6,36 @@ from openai import AsyncOpenAI
 from lightrag import LightRAG, QueryParam
 from lightrag.llm.openai import openai_complete_if_cache
 from lightrag.utils import EmbeddingFunc
-import nest_asyncio
 from dotenv import load_dotenv
 
 load_dotenv()
-nest_asyncio.apply()
+
+
+def _run(coro):
+    """Python 3.14-safe async runner.
+
+    - Inside a running loop (e.g. Streamlit): applies nest_asyncio on-demand and reuses the loop.
+    - Outside a loop (e.g. CLI / tests): creates a fresh loop explicitly.
+
+    nest_asyncio is intentionally NOT applied at module level to avoid corrupting
+    Streamlit/anyio's event loop during static file serving.
+    """
+    try:
+        loop = asyncio.get_running_loop()
+        # We are inside Streamlit's loop — patch it just-in-time so run_until_complete works
+        import nest_asyncio
+        nest_asyncio.apply(loop)
+        return loop.run_until_complete(coro)
+    except RuntimeError:
+        # No running loop — create a fresh one (CLI, tests, etc.)
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            return loop.run_until_complete(coro)
+        finally:
+            loop.close()
+            asyncio.set_event_loop(None)
+
 
 WORKING_DIR = "./rag_storage"
 XAI_BASE_URL = "https://api.x.ai/v1"
@@ -70,7 +95,7 @@ async def _async_initialize() -> None:
 
 def initialize() -> None:
     """Synchronous wrapper to initialise LightRAG — call once at app startup."""
-    asyncio.get_event_loop().run_until_complete(_async_initialize())
+    _run(_async_initialize())
 
  
 async def _async_ingest(text: str) -> None:
@@ -101,7 +126,7 @@ def ingest_chunks(
     print(f"[rag_pipeline] Ingesting '{source_filename}' into LightRAG knowledge graph...")
 
     try:
-        asyncio.get_event_loop().run_until_complete(_async_ingest(full_text))
+        _run(_async_ingest(full_text))
         print(f"[rag_pipeline] Done — {len(chunks)} chunks ingested from '{source_filename}'.")
         return len(chunks)
     except Exception as e:
@@ -137,7 +162,7 @@ def query_knowledge_graph(
     """
     print(f"[rag_pipeline] Querying LightRAG (mode={mode}): '{query}'")
     try:
-        result = asyncio.get_event_loop().run_until_complete(_async_query(query, mode))
+        result = _run(_async_query(query, mode))
         if result:
             print(f"[rag_pipeline] Retrieved context ({len(result.split())} words).")
             return [result]
@@ -155,5 +180,5 @@ async def _async_finalize() -> None:
 
 def finalize() -> None:
     """Gracefully close LightRAG storage connections. Call at app shutdown."""
-    asyncio.get_event_loop().run_until_complete(_async_finalize())
+    _run(_async_finalize())
     print("[rag_pipeline] LightRAG storages finalised.")
