@@ -2,7 +2,7 @@
 
 # 📖 SilverAI Handbook Generator
 
-> An AI-powered chat application that transforms your PDF documents into comprehensive, 20,000-word handbooks — all through a simple conversational interface.
+> An AI-powered chat application that transforms your PDF documents into comprehensive, 20,000-word handbooks — all through a simple conversational interface. Access here: https://silverai-handbook-generator.streamlit.app/
 
 ---
 
